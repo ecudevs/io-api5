@@ -4,6 +4,8 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const mongoose = require("mongoose");
 
+const productoRoutes = require("./routes/productoRoutes");
+
 const app = express();
 
 app.use(cors());
@@ -64,33 +66,13 @@ let productos = [
   }
 ];
 
-app.get("/productos", (req, res) => {
-  res.send({ productos });
-});
-
-app.get("/productos/:idProducto", (req, res) => {
-  let producto = productos.find(
-    productoABuscar => productoABuscar._id == req.params.idProducto
-  );
-  res.send({ producto });
-});
-
-app.post("/productos", (req, res) => {
-  productos.push(req.body);
-  res.send({ productos });
-});
-
-app.put("/productos", (req, res) => {
-  let index = productos.findIndex(
-    productoAEncontrar => productoAEncontrar._id == req.body._id
-  );
-  productos[index] = req.body;
-  res.send({ productos });
-});
+app.use("/", productoRoutes);
 
 const port = process.env.PORT || "9000";
 app.set("port", port);
 
 const server = http.createServer(app);
+
+mongoose.connect("mongodb://localhost:27017/ionic5", { useNewUrlParser: true });
 
 server.listen(port, () => console.log(`Mag Happens on port: ${port}`));
